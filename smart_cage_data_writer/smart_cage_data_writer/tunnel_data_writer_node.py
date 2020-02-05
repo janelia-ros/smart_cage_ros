@@ -48,11 +48,11 @@ class TunnelDataWriterNode(Node):
             10)
         self._tunnel_state_subscription  # prevent unused variable warning
 
-        self.path = Path.home() / 'smart_cage_data' / datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        self.path = Path.home() / 'smart_cage_data' / datetime.datetime.now().strftime("%Y-%m-%d")
         self.path.mkdir(parents=True)
         self.logger.info('created directory: ' + str(self.path))
-        self.data_path = self.path / 'data.txt'
-        self.data_file = open(self.data_path, 'w', newline='')
+        self.data_path = self.path / 'tunnel_state.txt'
+        self.data_file = open(self.data_path, 'a', newline='')
         self.fieldnames = convert.get_message_slot_types(TunnelState).keys()
         self.data_writer = csv.DictWriter(self.data_file,
                                           delimiter=' ',

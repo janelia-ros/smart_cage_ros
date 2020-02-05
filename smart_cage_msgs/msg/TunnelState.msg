@@ -1,6 +1,7 @@
-float64 time_in_seconds
+string datetime
+int64 nanosec
 float64 load_cell_voltage_ratio
-int8 right_head_bar_sensor_state
-int8 left_head_bar_sensor_state
-float64 latch_position
-string now
+bool right_head_bar_sensor_active
+bool left_head_bar_sensor_active
+float64 right_latch_position
+float64 left_latch_position
