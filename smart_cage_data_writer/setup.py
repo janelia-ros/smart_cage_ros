@@ -32,6 +32,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'lickport_data_writer_node ='
+            ' smart_cage_data_writer.lickport_data_writer_node:main',
             'tunnel_data_writer_node ='
             ' smart_cage_data_writer.tunnel_data_writer_node:main',
         ],

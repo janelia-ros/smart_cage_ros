@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Howard Hughes Medical Institute
+b# Copyright (c) 2020, Howard Hughes Medical Institute
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,38 +29,38 @@ import rclpy
 from rclpy.node import Node
 from rosidl_runtime_py import convert
 
-from smart_cage_msgs.msg import TunnelState
+from sensor_msgs.msg import JointState
 
 from pathlib import Path
 import datetime
 import csv
 
-class TunnelDataWriterNode(Node):
+class LickportDataWriterNode(Node):
     def __init__(self):
-        super().__init__('tunnel_data_writer')
+        super().__init__('lickport_data_writer')
 
         self.logger = self.get_logger()
 
-        self._tunnel_state_subscription = self.create_subscription(
-            TunnelState,
-            'tunnel_state',
-            self._tunnel_state_callback,
+        self._lickport_state_subscription = self.create_subscription(
+            LickportState,
+            'lickport_state',
+            self._lickport_state_callback,
             10)
-        self._tunnel_state_subscription  # prevent unused variable warning
+        self._lickport_state_subscription  # prevent unused variable warning
 
         self.path = Path.home() / 'smart_cage_data' / datetime.datetime.now().strftime("%Y-%m-%d")
         try:
             self.path.mkdir(parents=True)
         except FileExistsError:
             pass
-        self.data_path = self.path / 'tunnel_state.txt'
+        self.data_path = self.path / 'lickport_state.txt'
         self.logger.info('saving data into: ' + str(self.data_path))
         if self.data_path.exists():
             self.data_path_created = False
         else:
             self.data_path_created = True
         self.data_file = open(self.data_path, 'a', newline='')
-        self.fieldnames = convert.get_message_slot_types(TunnelState).keys()
+        self.fieldnames = convert.get_message_slot_types(LickportState).keys()
         self.data_writer = csv.DictWriter(self.data_file,
                                           delimiter=' ',
                                           quotechar='|',
@@ -69,7 +69,7 @@ class TunnelDataWriterNode(Node):
         if self.data_path_created:
             self.data_writer.writeheader()
 
-    def _tunnel_state_callback(self, msg):
+    def _lickport_state_callback(self, msg):
         msg_dict = convert.message_to_ordereddict(msg)
         self.data_writer.writerow(msg_dict)
 
@@ -79,12 +79,12 @@ class TunnelDataWriterNode(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    tunnel_data_writer_node = TunnelDataWriterNode()
+    lickport_data_writer_node = LickportDataWriterNode()
 
-    rclpy.spin(tunnel_data_writer_node)
+    rclpy.spin(lickport_data_writer_node)
 
-    tunnel_data_writer_node.close_files()
-    tunnel_data_writer_node.destroy_node()
+    lickport_data_writer_node.close_files()
+    lickport_data_writer_node.destroy_node()
     rclpy.shutdown()
 
 
