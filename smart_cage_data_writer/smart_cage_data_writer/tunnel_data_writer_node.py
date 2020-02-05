@@ -27,6 +27,7 @@
 
 import rclpy
 from rclpy.node import Node
+from rosidl_runtime_py import convert
 
 from smart_cage_msgs.msg import TunnelState
 
@@ -52,12 +53,7 @@ class TunnelDataWriterNode(Node):
         self.logger.info('created directory: ' + str(self.path))
         self.data_path = self.path / 'data.txt'
         self.data_file = open(self.data_path, 'w', newline='')
-        self.fieldnames = ['time_in_seconds',
-                           'load_cell_voltage_ratio',
-                           'right_head_bar_sensor_state',
-                           'left_head_bar_sensor_state',
-                           'latch_position',
-                           'now']
+        self.fieldnames = convert.get_message_slot_types(TunnelState).keys()
         self.data_writer = csv.DictWriter(self.data_file,
                                           delimiter=' ',
                                           quotechar='|',
@@ -66,7 +62,7 @@ class TunnelDataWriterNode(Node):
         self.data_writer.writeheader()
 
     def _tunnel_state_callback(self, msg):
-        msg_dict = {field: getattr(msg, field) for field in msg._fields_and_field_types if hasattr(msg, field)}
+        msg_dict = convert.message_to_ordereddict(msg)
         self.data_writer.writerow(msg_dict)
 
     def close_files(self):
