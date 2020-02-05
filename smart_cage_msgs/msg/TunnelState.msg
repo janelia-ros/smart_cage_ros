@@ -1,0 +1,6 @@
+float64 time_in_seconds
+float64 load_cell_voltage_ratio
+int8 right_head_bar_sensor_state
+int8 left_head_bar_sensor_state
+float64 latch_position
+string now
