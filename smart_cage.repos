@@ -11,6 +11,10 @@ repositories:
     type: git
     url: https://github.com/janelia-ros/phidgets_python_drivers_ros.git
     version: master
+  smart_cage:
+    type: git
+    url: https://github.com/janelia-ros/smart_cage_ros.git
+    version: master
   tunnel:
     type: git
     url: https://github.com/janelia-ros/tunnel_ros.git

@@ -1,0 +1,27 @@
+#+TITLE: Smart Cage ROS Interface
+#+AUTHOR: Peter Polidoro
+#+EMAIL: peterpolidoro@gmail.com
+
+* Library Information
+  - Name :: Smart Cage ROS Interface
+  - Version :: 1.0.0
+  - License :: BSD
+  - URL :: https://github.com/janelia-ros/smart_cage_ros
+  - Author :: Peter Polidoro
+  - Email :: peterpolidoro@gmail.com
+
+** Description
+
+   Smart Cage ROS Interface
+
+* Setup
+
+** Linux
+
+   #+BEGIN_SRC sh
+     sudo apt update && sudo apt install -y wget python3-vcstool
+     mkdir -p ~/smart_cage_ws/src
+     cd ~/smart_cage_ws
+     wget https://raw.githubusercontent.com/janelia-ros/smart_cage_ros/master/smart_cage.repos
+     vcs import src < smart_cage.repos
+   #+END_SRC
