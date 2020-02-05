@@ -1,0 +1,17 @@
+repositories:
+  common_interfaces:
+    type: git
+    url: https://github.com/janelia-ros/common_interfaces_ros.git
+    version: master
+  lickport:
+    type: git
+    url: https://github.com/janelia-ros/lickport_ros.git
+    version: master
+  phidgets_python_drivers:
+    type: git
+    url: https://github.com/janelia-ros/phidgets_python_drivers_ros.git
+    version: master
+  tunnel:
+    type: git
+    url: https://github.com/janelia-ros/tunnel_ros.git
+    version: master
