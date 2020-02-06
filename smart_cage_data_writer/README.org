@@ -10,21 +10,21 @@
   - Author :: Peter Polidoro
   - Email :: peterpolidoro@gmail.com
 
-** Description
+* Description
 
-   This is the smart cage data writer ROS interface.
+  This is the smart cage data writer ROS interface.
 
-** Published Topics
-   - `/tunnel_state` (`smart_cage_msgs/TunnelState`) - A joint state message containing the current state of all joints.
+* Published Topics
 
-** Subscribed Topics
-   - `/tunnel_joint_target` (`sensor_msgs/JointState`) - Set joint state targets.
+* Subscribed Topics
+  - `/data_writer_control` (`smart_cage_msgs/DataWriterControl`) Control the data writer nodes
 
-** Parameters
-   - `serial` (int) - The serial number of the phidgets motor to connect to.  If -1 (the default), connects to any motor phidget that can be found.
+* Parameters
 
-** Command Line Examples
+* Command Line Examples
 
-   #+BEGIN_SRC sh
-     ros2 launch smart_cage_data_writer data_writer.launch.py
-   #+END_SRC
+  #+BEGIN_SRC sh
+    ros2 launch smart_cage_data_writer data_writer.launch.py
+    ros2 topic pub -1 /data_writer_control smart_cage_msgs/DataWriterControl "{save_data: true}"
+    ros2 topic pub -1 /data_writer_control smart_cage_msgs/DataWriterControl "{save_data: false}"
+  #+END_SRC

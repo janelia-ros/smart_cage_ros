@@ -23,6 +23,7 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
 set(msg_files
+  "msg/DataWriterControl.msg"
   "msg/LickportState.msg"
   "msg/LickportTarget.msg"
   "msg/TunnelState.msg"

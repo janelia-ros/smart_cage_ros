@@ -1,3 +1,3 @@
-float64 x_position
-float64 y_position
-float64 z_position
+float64 x
+float64 y
+float64 z

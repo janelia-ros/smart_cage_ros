@@ -14,8 +14,8 @@
 
    This is the smart cage ROS interface.
 
-** Command Line Examples
+* Command Line Examples
 
-   #+BEGIN_SRC sh
-     ros2 launch smart_cage smart_cage.launch.py
-   #+END_SRC
+  #+BEGIN_SRC sh
+    ros2 launch smart_cage smart_cage.launch.py
+  #+END_SRC

@@ -11,6 +11,9 @@ def generate_launch_description():
             default_value=[launch.substitutions.EnvironmentVariable('USER'), '_'],
             description='Prefix for node names'),
         launch_ros.actions.Node(
+            package='smart_cage_data_writer', node_executable='lickport_data_writer_node', output='screen',
+            node_name=[launch.substitutions.LaunchConfiguration('node_prefix'), 'lickport_data_writer_node']),
+        launch_ros.actions.Node(
             package='smart_cage_data_writer', node_executable='tunnel_data_writer_node', output='screen',
             node_name=[launch.substitutions.LaunchConfiguration('node_prefix'), 'tunnel_data_writer_node']),
     ])

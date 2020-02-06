@@ -29,17 +29,17 @@ import rclpy
 from rclpy.node import Node
 from rosidl_runtime_py import convert
 
+from .data_writer_node import DataWriterNode
+
 from smart_cage_msgs.msg import TunnelState
 
 from pathlib import Path
 import datetime
 import csv
 
-class TunnelDataWriterNode(Node):
+class TunnelDataWriterNode(DataWriterNode):
     def __init__(self):
         super().__init__('tunnel_data_writer')
-
-        self.logger = self.get_logger()
 
         self._tunnel_state_subscription = self.create_subscription(
             TunnelState,
@@ -48,12 +48,7 @@ class TunnelDataWriterNode(Node):
             10)
         self._tunnel_state_subscription  # prevent unused variable warning
 
-        self.path = Path.home() / 'smart_cage_data' / datetime.datetime.now().strftime("%Y-%m-%d")
-        try:
-            self.path.mkdir(parents=True)
-        except FileExistsError:
-            pass
-        self.data_path = self.path / 'tunnel_state.txt'
+        self.data_path = self.base_path / 'tunnel_state.txt'
         self.logger.info('saving data into: ' + str(self.data_path))
         if self.data_path.exists():
             self.data_path_created = False
@@ -70,8 +65,9 @@ class TunnelDataWriterNode(Node):
             self.data_writer.writeheader()
 
     def _tunnel_state_callback(self, msg):
-        msg_dict = convert.message_to_ordereddict(msg)
-        self.data_writer.writerow(msg_dict)
+        if self.save_data:
+            msg_dict = convert.message_to_ordereddict(msg)
+            self.data_writer.writerow(msg_dict)
 
     def close_files(self):
         self.data_file.close()
