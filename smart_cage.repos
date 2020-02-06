@@ -1,8 +1,4 @@
 repositories:
-  common_interfaces:
-    type: git
-    url: https://github.com/janelia-ros/common_interfaces_ros.git
-    version: master
   lickport:
     type: git
     url: https://github.com/janelia-ros/lickport_ros.git
