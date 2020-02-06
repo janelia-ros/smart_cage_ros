@@ -7,7 +7,7 @@ repositories:
     type: git
     url: https://github.com/janelia-ros/phidgets_python_drivers_ros.git
     version: master
-  ros2_usb_camera
+  ros2_usb_camera:
     type: git
     url: https://github.com/janelia-ros/ros2_usb_camera.git
     version: dashing-devel
