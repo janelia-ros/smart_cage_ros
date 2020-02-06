@@ -1,0 +1,21 @@
+repositories:
+  lickport:
+    type: git
+    url: git@github.com:janelia-ros/lickport_ros.git
+    version: master
+  phidgets_python_drivers:
+    type: git
+    url: git@github.com:janelia-ros/phidgets_python_drivers_ros.git
+    version: master
+  ros2_usb_camera
+    type: git
+    url: git@github.com:janelia-ros/ros2_usb_camera.git
+    version: dashing-devel
+  smart_cage:
+    type: git
+    url: git@github.com:janelia-ros/smart_cage_ros.git
+    version: master
+  tunnel:
+    type: git
+    url: git@github.com:janelia-ros/tunnel_ros.git
+    version: master
