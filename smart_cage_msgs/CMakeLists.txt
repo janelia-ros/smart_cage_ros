@@ -24,8 +24,9 @@ find_package(std_msgs REQUIRED)
 
 set(msg_files
   "msg/DataWriterControl.msg"
+  "msg/LickportControl.msg"
   "msg/LickportState.msg"
-  "msg/LickportTarget.msg"
+  "msg/TunnelControl.msg"
   "msg/TunnelState.msg"
   )
 
