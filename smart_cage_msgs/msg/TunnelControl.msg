@@ -1,1 +1,1 @@
-bool save_data
+bool latch_mode
