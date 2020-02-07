@@ -27,7 +27,6 @@
 
 import rclpy
 from rclpy.node import Node
-from rosidl_runtime_py import convert
 
 from smart_cage_msgs.msg import DataWriterControl
 
@@ -42,18 +41,17 @@ class DataWriterNode(Node):
 
         self.save_data = False
 
-        self._data_writer_control_subscription = self.create_subscription(
-            DataWriterControl,
-            'data_writer_control',
-            self._data_writer_control_callback,
-            10)
-        self._data_writer_control_subscription  # prevent unused variable warning
-
         self.base_path = Path.home() / 'smart_cage_data' / datetime.datetime.now().strftime("%Y-%m-%d")
         try:
             self.base_path.mkdir(parents=True)
         except FileExistsError:
             pass
+
+        self._data_writer_control_subscription = self.create_subscription(
+            DataWriterControl,
+            'data_writer_control',
+            self._data_writer_control_callback)
+        self._data_writer_control_subscription  # prevent unused variable warning
 
     def _data_writer_control_callback(self, msg):
         self.save_data = msg.save_data

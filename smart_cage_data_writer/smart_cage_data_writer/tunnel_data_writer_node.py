@@ -27,7 +27,6 @@
 
 import rclpy
 from rclpy.node import Node
-from rosidl_runtime_py import convert
 
 from .data_writer_node import DataWriterNode
 
@@ -41,13 +40,6 @@ class TunnelDataWriterNode(DataWriterNode):
     def __init__(self):
         super().__init__('tunnel_data_writer')
 
-        self._tunnel_state_subscription = self.create_subscription(
-            TunnelState,
-            'tunnel_state',
-            self._tunnel_state_callback,
-            10)
-        self._tunnel_state_subscription  # prevent unused variable warning
-
         self.data_path = self.base_path / 'tunnel_state.txt'
         self.logger.info('saving data into: ' + str(self.data_path))
         if self.data_path.exists():
@@ -55,18 +47,27 @@ class TunnelDataWriterNode(DataWriterNode):
         else:
             self.data_path_created = True
         self.data_file = open(self.data_path, 'a', newline='')
-        self.fieldnames = convert.get_message_slot_types(TunnelState).keys()
-        self.data_writer = csv.DictWriter(self.data_file,
-                                          delimiter=' ',
-                                          quotechar='|',
-                                          quoting=csv.QUOTE_MINIMAL,
-                                          fieldnames=self.fieldnames)
-        if self.data_path_created:
-            self.data_writer.writeheader()
+        self.data_writer = None
+
+        self._tunnel_state_subscription = self.create_subscription(
+            TunnelState,
+            'tunnel_state',
+            self._tunnel_state_callback)
+        self._tunnel_state_subscription  # prevent unused variable warning
 
     def _tunnel_state_callback(self, msg):
+        if self.data_writer is None:
+            self.fieldnames = [field[1:] for field in msg.__slots__]
+            self.data_writer = csv.DictWriter(self.data_file,
+                                              delimiter=' ',
+                                              quotechar='|',
+                                              quoting=csv.QUOTE_MINIMAL,
+                                              fieldnames=self.fieldnames)
+            if self.data_path_created:
+                self.data_writer.writeheader()
+
         if self.save_data:
-            msg_dict = convert.message_to_ordereddict(msg)
+            msg_dict = {field[1:]: getattr(msg, field[1:]) for field in msg.__slots__}
             self.data_writer.writerow(msg_dict)
 
     def close_files(self):
