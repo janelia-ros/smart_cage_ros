@@ -78,7 +78,10 @@ def main(args=None):
 
     lickport_data_writer_node = LickportDataWriterNode()
 
-    rclpy.spin(lickport_data_writer_node)
+    try:
+        rclpy.spin(lickport_data_writer_node)
+    except KeyboardInterrupt:
+        pass
 
     lickport_data_writer_node.close_files()
     lickport_data_writer_node.destroy_node()

@@ -78,7 +78,10 @@ def main(args=None):
 
     tunnel_data_writer_node = TunnelDataWriterNode()
 
-    rclpy.spin(tunnel_data_writer_node)
+    try:
+        rclpy.spin(tunnel_data_writer_node)
+    except KeyboardInterrupt:
+        pass
 
     tunnel_data_writer_node.close_files()
     tunnel_data_writer_node.destroy_node()
