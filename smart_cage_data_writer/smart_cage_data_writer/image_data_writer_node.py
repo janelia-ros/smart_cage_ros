@@ -30,36 +30,33 @@ from rclpy.node import Node
 
 from .data_writer_node import DataWriterNode
 
-from smart_cage_msgs.msg import TunnelState
-
 from pathlib import Path
 
-import csv
+import cv2
 
-class TunnelDataWriterNode(DataWriterNode):
+class ImageDataWriterNode(DataWriterNode):
     def __init__(self):
-        super().__init__('tunnel_data_writer')
+        super().__init__('image_data_writer')
 
         self.data_writer = None
 
-        self._tunnel_state_subscription = self.create_subscription(
-            TunnelState,
-            'tunnel_state',
-            self._tunnel_state_callback)
-        self._tunnel_state_subscription  # prevent unused variable warning
+        self._image_state_subscription = self.create_subscription(
+            ImageState,
+            'image_state',
+            self._image_state_callback)
+        self._image_state_subscription  # prevent unused variable warning
 
     def _data_writer_control_callback(self, msg):
         super()._data_writer_control_callback(msg)
-        self.data_path = self.base_path / 'tunnel_state.txt'
-        self.logger.info('saving data into: ' + str(self.data_path))
+        self.base_path = self.base_path / 'images'
+        self.logger.info('saving images into: ' + str(self.base_path))
         if self.data_path.exists():
             self.data_path_created = False
         else:
             self.data_path_created = True
         self.data_file = open(self.data_path, 'a', newline='')
 
-
-    def _tunnel_state_callback(self, msg):
+    def _image_state_callback(self, msg):
         if self.base_path is not None and self.data_writer is None:
             self.fieldnames = [field[1:] for field in msg.__slots__]
             self.data_writer = csv.DictWriter(self.data_file,
@@ -80,15 +77,15 @@ class TunnelDataWriterNode(DataWriterNode):
 def main(args=None):
     rclpy.init(args=args)
 
-    tunnel_data_writer_node = TunnelDataWriterNode()
+    image_data_writer_node = ImageDataWriterNode()
 
     try:
-        rclpy.spin(tunnel_data_writer_node)
+        rclpy.spin(image_data_writer_node)
     except KeyboardInterrupt:
         pass
 
-    tunnel_data_writer_node.close_files()
-    tunnel_data_writer_node.destroy_node()
+    image_data_writer_node.close_files()
+    image_data_writer_node.destroy_node()
     rclpy.shutdown()
 
 

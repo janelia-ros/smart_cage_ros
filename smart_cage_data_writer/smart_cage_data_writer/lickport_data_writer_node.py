@@ -33,7 +33,7 @@ from .data_writer_node import DataWriterNode
 from smart_cage_msgs.msg import LickportState
 
 from pathlib import Path
-import datetime
+
 import csv
 
 class LickportDataWriterNode(DataWriterNode):
