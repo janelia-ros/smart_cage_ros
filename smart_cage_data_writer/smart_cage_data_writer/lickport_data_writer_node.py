@@ -40,13 +40,6 @@ class LickportDataWriterNode(DataWriterNode):
     def __init__(self):
         super().__init__('lickport_data_writer')
 
-        self.data_path = self.base_path / 'lickport_state.txt'
-        self.logger.info('saving data into: ' + str(self.data_path))
-        if self.data_path.exists():
-            self.data_path_created = False
-        else:
-            self.data_path_created = True
-        self.data_file = open(self.data_path, 'a', newline='')
         self.data_writer = None
 
         self._lickport_state_subscription = self.create_subscription(
@@ -55,8 +48,18 @@ class LickportDataWriterNode(DataWriterNode):
             self._lickport_state_callback)
         self._lickport_state_subscription  # prevent unused variable warning
 
+    def _data_writer_control_callback(self, msg):
+        super()._data_writer_control_callback(msg)
+        self.data_path = self.base_path / 'lickport_state.txt'
+        self.logger.info('saving data into: ' + str(self.data_path))
+        if self.data_path.exists():
+            self.data_path_created = False
+        else:
+            self.data_path_created = True
+        self.data_file = open(self.data_path, 'a', newline='')
+
     def _lickport_state_callback(self, msg):
-        if self.data_writer is None:
+        if self.base_path is not None and self.data_writer is None:
             self.fieldnames = [field[1:] for field in msg.__slots__]
             self.data_writer = csv.DictWriter(self.data_file,
                                               delimiter=' ',

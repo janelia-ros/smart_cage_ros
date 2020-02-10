@@ -39,13 +39,7 @@ class DataWriterNode(Node):
         super().__init__(name)
         self.logger = self.get_logger()
 
-        self.save_data = False
-
-        self.base_path = Path.home() / 'smart_cage_data' / datetime.datetime.now().strftime("%Y-%m-%d")
-        try:
-            self.base_path.mkdir(parents=True)
-        except FileExistsError:
-            pass
+        self.base_path = None
 
         self._data_writer_control_subscription = self.create_subscription(
             DataWriterControl,
@@ -54,4 +48,9 @@ class DataWriterNode(Node):
         self._data_writer_control_subscription  # prevent unused variable warning
 
     def _data_writer_control_callback(self, msg):
-        self.save_data = msg.save_data
+        self.base_path = Path.home() / 'smart_cage_data'
+        self.base_path = self.base_path / msg.mouse_name / datetime.datetime.now().strftime("%Y-%m-%d")
+        try:
+            self.base_path.mkdir(parents=True)
+        except FileExistsError:
+            pass

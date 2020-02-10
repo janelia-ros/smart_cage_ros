@@ -1,1 +1,1 @@
-bool save_data
+string mouse_name
