@@ -33,46 +33,44 @@ from .data_writer_node import DataWriterNode
 from pathlib import Path
 
 import cv2
+import time
+import math
+import datetime
 
 class ImageDataWriterNode(DataWriterNode):
     def __init__(self):
         super().__init__('image_data_writer')
 
-        self.data_writer = None
-
-        self._image_state_subscription = self.create_subscription(
-            ImageState,
-            'image_state',
-            self._image_state_callback)
-        self._image_state_subscription  # prevent unused variable warning
+        self.cap = None
+        self._image_timer = None
+        self._image_timer_period = 1
 
     def _data_writer_control_callback(self, msg):
         super()._data_writer_control_callback(msg)
         self.base_path = self.base_path / 'images'
+        try:
+            self.base_path.mkdir(parents=True)
+        except FileExistsError:
+            pass
         self.logger.info('saving images into: ' + str(self.base_path))
-        if self.data_path.exists():
-            self.data_path_created = False
-        else:
-            self.data_path_created = True
-        self.data_file = open(self.data_path, 'a', newline='')
+        self.cap = cv2.VideoCapture(0)
+        self.cap.set(3,320)
+        self.cap.set(4,240)
+        self._image_timer = self.create_timer(self._image_timer_period, self._image_timer_callback)
 
-    def _image_state_callback(self, msg):
-        if self.base_path is not None and self.data_writer is None:
-            self.fieldnames = [field[1:] for field in msg.__slots__]
-            self.data_writer = csv.DictWriter(self.data_file,
-                                              delimiter=' ',
-                                              quotechar='|',
-                                              quoting=csv.QUOTE_MINIMAL,
-                                              fieldnames=self.fieldnames)
-            if self.data_path_created:
-                self.data_writer.writeheader()
+    def _image_timer_callback(self):
+        ret, frame = self.cap.read()
+        now = time.time()
+        now_frac, now_whole = math.modf(time.time())
+        nanosec = int(now_frac * 1e9)
+        file_name = datetime.datetime.fromtimestamp(now).strftime('%H-%M-%S')
+        file_name = file_name + '-{0}'.format(nanosec)
+        file_path = str(self.base_path / '{0}.jpg'.format(file_name))
+        self.logger.info(file_path)
+        cv2.imwrite(file_path, frame)
 
-        if self.save_data:
-            msg_dict = {field[1:]: getattr(msg, field[1:]) for field in msg.__slots__}
-            self.data_writer.writerow(msg_dict)
-
-    def close_files(self):
-        self.data_file.close()
+    def close(self):
+        self.cap.release()
 
 def main(args=None):
     rclpy.init(args=args)
@@ -84,7 +82,7 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
 
-    image_data_writer_node.close_files()
+    image_data_writer_node.close()
     image_data_writer_node.destroy_node()
     rclpy.shutdown()
 
