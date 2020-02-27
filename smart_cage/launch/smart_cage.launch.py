@@ -7,6 +7,9 @@ import launch_ros.actions
 def generate_launch_description():
     return launch.LaunchDescription([
         launch_ros.actions.Node(
+            package='smart_cage', node_executable='smart_cage_node', output='screen',
+            node_name='smart_cage_node'),
+        launch_ros.actions.Node(
             package='lickport', node_executable='lickport_node', output='screen',
             node_name='lickport_node'),
         launch_ros.actions.Node(
