@@ -25,28 +25,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import rclpy
-from rclpy.node import Node
-
-from .smart_cage import SmartCage
-
-class SmartCageNode(Node):
+class SmartCage():
     def __init__(self):
-        super().__init__('smart_cage')
-
-def main(args=None):
-    rclpy.init(args=args)
-
-    smart_cage_node = SmartCageNode()
-
-    try:
-        rclpy.spin(smart_cage_node)
-    except KeyboardInterrupt:
         pass
-
-    smart_cage_node.destroy_node()
-    rclpy.shutdown()
-
-
-if __name__ == '__main__':
-    main()
