@@ -32,7 +32,6 @@ from smart_cage_msgs.msg import DataWriterControl
 
 from pathlib import Path
 import datetime
-import csv
 
 class DataWriterNode(Node):
     def __init__(self, name):

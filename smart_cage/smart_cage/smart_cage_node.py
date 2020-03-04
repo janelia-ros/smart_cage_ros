@@ -28,11 +28,24 @@
 import rclpy
 from rclpy.node import Node
 
+from smart_cage_msgs.msg import StartNewTrainingPeriod
+
 from .smart_cage import SmartCage
 
 class SmartCageNode(Node):
     def __init__(self):
         super().__init__('smart_cage')
+        self.logger = self.get_logger()
+        self._smart_cage = SmartCage(self.logger)
+
+        self._start_new_training_period_subscription = self.create_subscription(
+            StartNewTrainingPeriod,
+            'start_new_training_period',
+            self._start_new_training_period_callback)
+        self._start_new_training_period_subscription  # prevent unused variable warning
+
+    def _start_new_training_period_callback(self, msg):
+        self._smart_cage.start_new_training_period(msg.mouse_name)
 
 def main(args=None):
     rclpy.init(args=args)

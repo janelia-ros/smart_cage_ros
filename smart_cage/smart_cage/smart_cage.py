@@ -25,6 +25,29 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+from pathlib import Path
+import re
+
 class SmartCage():
-    def __init__(self):
-        pass
+    def __init__(self, logger):
+        self.logger = logger
+        self.training_period_prefix = 'training_period_'
+
+    def start_new_training_period(self, mouse_name):
+        self.base_path = Path.home() / 'smart_cage_data'
+        self.base_path = self.base_path / mouse_name
+        try:
+            self.base_path.mkdir(parents=True)
+        except FileExistsError:
+            pass
+        training_period_names = sorted([x.name for x in self.base_path.iterdir() if x.is_dir()])
+        try:
+            last_training_period_name = training_period_names[-1]
+            last_training_period_number = int(re.findall(self.training_period_prefix + '(\d+)', last_training_period_name)[0])
+            new_training_period_number = last_training_period_number + 1
+        except IndexError:
+            new_training_period_number = 0
+        new_training_period_name = f'{self.training_period_prefix}{new_training_period_number:03}'
+        self.base_path = self.base_path / new_training_period_name
+        self.base_path.mkdir()
+        self.logger.info(f'New training period base path: {self.base_path}')
