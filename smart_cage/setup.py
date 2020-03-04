@@ -32,8 +32,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'smart_cage_node ='
-            ' smart_cage.smart_cage_node:main',
+            'smart_cage_controller_node ='
+            ' smart_cage.smart_cage_controller_node:main',
         ],
     },
 )

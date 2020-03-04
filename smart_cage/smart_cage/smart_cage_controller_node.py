@@ -25,29 +25,50 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from pathlib import Path
-import re
+import rclpy
+from rclpy.node import Node
 
-class SmartCage():
-    def __init__(self, logger):
-        self.logger = logger
-        self.training_period_prefix = 'training_period_'
+from smart_cage_msgs.msg import StartNewTrainingPeriod, StartNewSession
 
-    def start_new_training_period(self, mouse_name):
-        self.base_path = Path.home() / 'smart_cage_data'
-        self.base_path = self.base_path / mouse_name
-        try:
-            self.base_path.mkdir(parents=True)
-        except FileExistsError:
-            pass
-        training_period_names = sorted([x.name for x in self.base_path.iterdir() if x.is_dir()])
-        try:
-            last_training_period_name = training_period_names[-1]
-            last_training_period_number = int(re.findall(self.training_period_prefix + '(\d+)', last_training_period_name)[0])
-            new_training_period_number = last_training_period_number + 1
-        except IndexError:
-            new_training_period_number = 0
-        new_training_period_name = f'{self.training_period_prefix}{new_training_period_number:03}'
-        self.base_path = self.base_path / new_training_period_name
-        self.base_path.mkdir()
-        self.logger.info(f'New training period base path: {self.base_path}')
+from .smart_cage_controller import SmartCageController
+
+class SmartCageControllerNode(Node):
+    def __init__(self):
+        super().__init__('smart_cage_controller')
+        self.logger = self.get_logger()
+        self._smart_cage_controller = SmartCageController(self.logger)
+
+        self._start_new_training_period_subscription = self.create_subscription(
+            StartNewTrainingPeriod,
+            'start_new_training_period',
+            self._start_new_training_period_callback)
+        self._start_new_training_period_subscription  # prevent unused variable warning
+
+        self._start_new_session_subscription = self.create_subscription(
+            StartNewSession,
+            'start_new_session',
+            self._start_new_session_callback)
+        self._start_new_session_subscription  # prevent unused variable warning
+
+    def _start_new_training_period_callback(self, msg):
+        self._smart_cage_controller.start_new_training_period(msg.mouse_name, msg.latch_durations)
+
+    def _start_new_session_callback(self, msg):
+        self._smart_cage_controller.start_new_session(msg.mouse_name)
+
+def main(args=None):
+    rclpy.init(args=args)
+
+    smart_cage_controller_node = SmartCageControllerNode()
+
+    try:
+        rclpy.spin(smart_cage_controller_node)
+    except KeyboardInterrupt:
+        pass
+
+    smart_cage_controller_node.destroy_node()
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()

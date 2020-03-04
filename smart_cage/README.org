@@ -18,6 +18,7 @@
 
   #+BEGIN_SRC sh
     ros2 launch smart_cage smart_cage.launch.py
-    ros2 run smart_cage smart_cage_node
-    ros2 topic pub -1 /start_new_training_period smart_cage_msgs/StartNewTrainingPeriod "{mouse_name: HC34}"
+    ros2 run smart_cage smart_cage_controller_node
+    ros2 topic pub -1 /start_new_training_period smart_cage_msgs/StartNewTrainingPeriod "{mouse_name: HC34, latch_durations: [30, 30, 30, 60, 100, 100, 180, 180, 300, 300, 600, 600, 900, 900, 1200, 1200, 1200, 1800, 1800]}"
+    ros2 topic pub -1 /start_new_session smart_cage_msgs/StartNewSession "{mouse_name: HC34}"
   #+END_SRC
