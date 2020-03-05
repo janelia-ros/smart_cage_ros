@@ -138,7 +138,8 @@ class SmartCageController():
         self.logger.info(f'New session path: {self.session_path}')
 
         session_info = {}
-        session_creation_datetime = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        now = datetime.datetime.now()
+        session_creation_datetime = now.strftime("%Y-%m-%d-%H-%M-%S")
         session_info['creation_datetime'] = session_creation_datetime
         session_info['session_number'] = new_session_number
         msg_dict = {field[1:]: getattr(msg, field[1:]) for field in msg.__slots__}
