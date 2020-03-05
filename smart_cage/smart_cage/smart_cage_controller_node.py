@@ -28,7 +28,7 @@
 import rclpy
 from rclpy.node import Node
 
-from smart_cage_msgs.msg import StartNewTrainingPeriod, StartNewSession
+from smart_cage_msgs.msg import TrainingPeriod, Session
 
 from .smart_cage_controller import SmartCageController
 
@@ -38,23 +38,23 @@ class SmartCageControllerNode(Node):
         self.logger = self.get_logger()
         self._smart_cage_controller = SmartCageController(self.logger)
 
-        self._start_new_training_period_subscription = self.create_subscription(
-            StartNewTrainingPeriod,
-            'start_new_training_period',
-            self._start_new_training_period_callback)
-        self._start_new_training_period_subscription  # prevent unused variable warning
+        self._create_training_period_subscription = self.create_subscription(
+            TrainingPeriod,
+            'create_training_period',
+            self._create_training_period_callback)
+        self._create_training_period_subscription  # prevent unused variable warning
 
-        self._start_new_session_subscription = self.create_subscription(
-            StartNewSession,
-            'start_new_session',
-            self._start_new_session_callback)
-        self._start_new_session_subscription  # prevent unused variable warning
+        self._create_session_subscription = self.create_subscription(
+            Session,
+            'create_session',
+            self._create_session_callback)
+        self._create_session_subscription  # prevent unused variable warning
 
-    def _start_new_training_period_callback(self, msg):
-        self._smart_cage_controller.start_new_training_period(msg.mouse_name, msg.latch_durations)
+    def _create_training_period_callback(self, msg):
+        self._smart_cage_controller.create_training_period(msg.mouse_name, msg.latch_durations)
 
-    def _start_new_session_callback(self, msg):
-        self._smart_cage_controller.start_new_session(msg.mouse_name)
+    def _create_session_callback(self, msg):
+        self._smart_cage_controller.create_session(msg.mouse_name)
 
 def main(args=None):
     rclpy.init(args=args)

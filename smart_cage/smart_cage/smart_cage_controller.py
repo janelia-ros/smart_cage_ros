@@ -62,7 +62,7 @@ class SmartCageController():
             last_training_period_path = None
         return last_training_period_path
 
-    def start_new_training_period(self, mouse_name, latch_durations):
+    def create_training_period(self, mouse_name, latch_durations):
         mouse_path = self.get_mouse_path(mouse_name)
         try:
             mouse_path.mkdir(parents=True)
@@ -81,8 +81,8 @@ class SmartCageController():
         self.logger.info(f'New training period path: {self.training_period_path}')
 
         training_period_info = {}
-        training_period_start_datetime = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        training_period_info['training_period_start_datetime'] = training_period_start_datetime
+        training_period_creation_datetime = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        training_period_info['training_period_creation_datetime'] = training_period_creation_datetime
         training_period_info['latch_durations'] = latch_durations
         self.training_period_info_path = self.training_period_path / self.training_period_info_filename
         with open(str(self.training_period_info_path), 'w') as f:
@@ -112,14 +112,14 @@ class SmartCageController():
             last_session_path = None
         return last_session_path
 
-    def start_new_session(self, mouse_name):
+    def create_session(self, mouse_name):
         try:
             mouse_path = self.get_mouse_path(mouse_name)
             last_training_period_path = self.get_last_training_period_path(mouse_path)
             if last_training_period_path is None:
                 raise FileNotFoundError
         except FileNotFoundError:
-            self.logger.error('Must start new training period before starting new session!')
+            self.logger.error('Must create new training period before creating new session!')
             return
 
         last_session_name = self.get_last_session_name(last_training_period_path)
@@ -135,8 +135,8 @@ class SmartCageController():
         self.logger.info(f'New session path: {self.session_path}')
 
         session_info = {}
-        session_start_datetime = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        session_info['session_start_datetime'] = session_start_datetime
+        session_creation_datetime = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        session_info['session_creation_datetime'] = session_creation_datetime
         self.session_info_path = self.session_path / self.session_info_filename
         with open(str(self.session_info_path), 'w') as f:
             json.dump(session_info, f, indent=2, sort_keys=True)

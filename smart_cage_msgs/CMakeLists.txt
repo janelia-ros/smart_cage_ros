@@ -26,8 +26,8 @@ set(msg_files
   "msg/DataWriterControl.msg"
   "msg/LickportControl.msg"
   "msg/LickportState.msg"
-  "msg/StartNewSession.msg"
-  "msg/StartNewTrainingPeriod.msg"
+  "msg/Session.msg"
+  "msg/TrainingPeriod.msg"
   "msg/TunnelControl.msg"
   "msg/TunnelState.msg"
   )
