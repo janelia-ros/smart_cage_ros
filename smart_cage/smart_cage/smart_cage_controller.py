@@ -62,8 +62,8 @@ class SmartCageController():
             last_training_period_path = None
         return last_training_period_path
 
-    def create_training_period(self, mouse_name, latch_durations):
-        mouse_path = self.get_mouse_path(mouse_name)
+    def create_training_period(self, msg):
+        mouse_path = self.get_mouse_path(msg.mouse_name)
         try:
             mouse_path.mkdir(parents=True)
         except FileExistsError:
@@ -82,15 +82,18 @@ class SmartCageController():
 
         training_period_info = {}
         training_period_creation_datetime = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        training_period_info['training_period_creation_datetime'] = training_period_creation_datetime
-        training_period_info['latch_durations'] = latch_durations
+        training_period_info['creation_datetime'] = training_period_creation_datetime
+        training_period_info['training_period_number'] = new_training_period_number
+        msg_dict = {field[1:]: getattr(msg, field[1:]) for field in msg.__slots__}
+        training_period_info = {**training_period_info, **msg_dict}
         self.training_period_info_path = self.training_period_path / self.training_period_info_filename
         with open(str(self.training_period_info_path), 'w') as f:
             json.dump(training_period_info, f, indent=2, sort_keys=True)
             self.logger.info(f'Wrote training period info to: {self.training_period_info_path}')
 
         training_period_state = {}
-        training_period_state['latch_durations'] = latch_durations
+        training_period_state['modification_datetime'] = training_period_creation_datetime
+        training_period_state['latch_durations'] = msg.latch_durations
         self.training_period_state_path = self.training_period_path / self.training_period_state_filename
         with open(str(self.training_period_state_path), 'w') as f:
             json.dump(training_period_state, f, indent=2, sort_keys=True)
@@ -112,9 +115,9 @@ class SmartCageController():
             last_session_path = None
         return last_session_path
 
-    def create_session(self, mouse_name):
+    def create_session(self, msg):
         try:
-            mouse_path = self.get_mouse_path(mouse_name)
+            mouse_path = self.get_mouse_path(msg.mouse_name)
             last_training_period_path = self.get_last_training_period_path(mouse_path)
             if last_training_period_path is None:
                 raise FileNotFoundError
@@ -136,7 +139,10 @@ class SmartCageController():
 
         session_info = {}
         session_creation_datetime = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        session_info['session_creation_datetime'] = session_creation_datetime
+        session_info['creation_datetime'] = session_creation_datetime
+        session_info['session_number'] = new_session_number
+        msg_dict = {field[1:]: getattr(msg, field[1:]) for field in msg.__slots__}
+        session_info = {**session_info, **msg_dict}
         self.session_info_path = self.session_path / self.session_info_filename
         with open(str(self.session_info_path), 'w') as f:
             json.dump(session_info, f, indent=2, sort_keys=True)

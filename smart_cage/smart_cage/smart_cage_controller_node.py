@@ -51,10 +51,10 @@ class SmartCageControllerNode(Node):
         self._create_session_subscription  # prevent unused variable warning
 
     def _create_training_period_callback(self, msg):
-        self._smart_cage_controller.create_training_period(msg.mouse_name, msg.latch_durations)
+        self._smart_cage_controller.create_training_period(msg)
 
     def _create_session_callback(self, msg):
-        self._smart_cage_controller.create_session(msg.mouse_name)
+        self._smart_cage_controller.create_session(msg)
 
 def main(args=None):
     rclpy.init(args=args)
