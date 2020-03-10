@@ -1,9 +1,12 @@
 string mouse_name
 
-# 09-00 = 9:00AM, 15-30 = 3:30 PM
-string start_time "09-00"
+# range(24) 9 = 9:00AM, 15 = 3:00PM
+uint8 start_time_hour 9
 
-# duration (hours)
+# range(60) 0 = 9:00AM, 30 = 9:30AM
+uint8 start_time_minute 0
+
+# duration (hours) (duration + start_time_hour) must be <= 23
 uint8 duration 12
 
 float32 threshold 0.25

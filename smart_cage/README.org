@@ -20,5 +20,5 @@
     ros2 launch smart_cage smart_cage.launch.py
     ros2 run smart_cage smart_cage_controller_node
     ros2 topic pub -1 /create_training_period smart_cage_msgs/TrainingPeriod "{mouse_name: HC34, latch_durations: [30, 30, 30, 60, 100, 100, 180, 180, 300, 300, 600, 600, 900, 900, 1200, 1200, 1200, 1800, 1800]}"
-    ros2 topic pub -1 /create_session smart_cage_msgs/Session "{mouse_name: HC34, start_time: 09-00, threshold: 0.25, duration: 12, latch_mode: false, require_both_head_bar_sensors: true}"
+    ros2 topic pub -1 /create_session smart_cage_msgs/Session "{mouse_name: HC34, start_time_hour: 9, start_time_minute: 0, threshold: 0.25, duration: 12, latch_mode: false, require_both_head_bar_sensors: true}"
   #+END_SRC

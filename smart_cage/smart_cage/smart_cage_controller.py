@@ -81,8 +81,9 @@ class SmartCageController():
         self.logger.info(f'New training period path: {self.training_period_path}')
 
         training_period_info = {}
-        training_period_creation_datetime = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        training_period_info['creation_datetime'] = training_period_creation_datetime
+        training_period_creation_datetime = datetime.datetime.now()
+        training_period_creation_datetime_str = training_period_creation_datetime.strftime("%Y-%m-%d-%H-%M-%S")
+        training_period_info['creation_datetime'] = training_period_creation_datetime_str
         training_period_info['training_period_number'] = new_training_period_number
         msg_dict = {field[1:]: getattr(msg, field[1:]) for field in msg.__slots__}
         training_period_info = {**training_period_info, **msg_dict}
@@ -92,7 +93,7 @@ class SmartCageController():
             self.logger.info(f'Wrote training period info to: {self.training_period_info_path}')
 
         training_period_state = {}
-        training_period_state['modification_datetime'] = training_period_creation_datetime
+        training_period_state['modification_datetime'] = training_period_creation_datetime_str
         training_period_state['latch_durations'] = msg.latch_durations
         self.training_period_state_path = self.training_period_path / self.training_period_state_filename
         with open(str(self.training_period_state_path), 'w') as f:
@@ -138,9 +139,9 @@ class SmartCageController():
         self.logger.info(f'New session path: {self.session_path}')
 
         session_info = {}
-        now = datetime.datetime.now()
-        session_creation_datetime = now.strftime("%Y-%m-%d-%H-%M-%S")
-        session_info['creation_datetime'] = session_creation_datetime
+        session_creation_datetime = datetime.datetime.now()
+        session_creation_datetime_str = session_creation_datetime.strftime("%Y-%m-%d-%H-%M-%S")
+        session_info['creation_datetime'] = session_creation_datetime_str
         session_info['session_number'] = new_session_number
         msg_dict = {field[1:]: getattr(msg, field[1:]) for field in msg.__slots__}
         session_info = {**session_info, **msg_dict}
@@ -148,3 +149,22 @@ class SmartCageController():
         with open(str(self.session_info_path), 'w') as f:
             json.dump(session_info, f, indent=2, sort_keys=True)
             self.logger.info(f'Wrote session info to: {self.session_info_path}')
+
+        session_stop_time_hour = msg.start_time_hour + msg.duration
+        if session_stop_time_hour > 23:
+            session_stop_time_hour = 23
+        session_stop_datetime = session_creation_datetime.replace(hour=session_stop_time_hour,
+                                                                  minute=msg.start_time_minute,
+                                                                  second=0)
+        session_stop_datetime_str = session_stop_datetime.strftime("%Y-%m-%d-%H-%M-%S")
+        session_stop_timedelta = session_stop_datetime - session_creation_datetime
+        session_stop_timedelta_str = str(session_stop_timedelta.total_seconds())
+        if session_stop_timedelta.total_seconds() < 0:
+            return
+
+        session_start_datetime = session_creation_datetime.replace(hour=msg.start_time_hour,
+                                                                   minute=msg.start_time_minute,
+                                                                   second=0)
+        session_start_datetime_str = session_start_datetime.strftime("%Y-%m-%d-%H-%M-%S")
+        session_start_timedelta = session_start_datetime - session_creation_datetime
+        session_start_timedelta_str = str(session_start_timedelta.total_seconds())
