@@ -1,6 +1,6 @@
 #+TITLE: SETUP_WINDOWS
 #+AUTHOR: Peter Polidoro
-#+EMAIL: peterpolidoro@gmail.com
+#+EMAIL: peter@polidoro.io
 
 * Library Information
   - Name :: SETUP_WINDOWS
@@ -8,7 +8,7 @@
   - License :: BSD
   - URL :: https://github.com/janelia-experimental-technology/smart_cage
   - Author :: Peter Polidoro
-  - Email :: peterpolidoro@gmail.com
+  - Email :: peter@polidoro.io
 
 ** Description
 
